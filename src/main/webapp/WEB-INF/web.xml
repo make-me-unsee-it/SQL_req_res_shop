@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns=""
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation=""
+         version="4.0">
+
+  <listener>
+    <listener-class>com.step.hryshkin.config.ContextInitializer</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>h2-console</servlet-name>
+    <servlet-class>org.h2.server.web.WebServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>h2-console</servlet-name>
+    <url-pattern>/h2/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>UserPassFilter</filter-name>
+    <filter-class>com.step.hryshkin.filters.UserPassFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>UserPassFilter</filter-name>
+    <url-pattern>/order_page.jsp</url-pattern>
+  </filter-mapping>
+
+  <welcome-file-list>
+    <welcome-file>user_check_page.jsp</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/404.jsp</location>
+  </error-page>
+
+
+  <display-name>Archetype Created Web Application</display-name>
+</web-app>
