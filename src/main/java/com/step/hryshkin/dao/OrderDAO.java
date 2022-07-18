@@ -8,6 +8,7 @@ public interface OrderDAO {
 
     void createNewOrder(Order order);
 
-    Optional<Order> getId(long id);
+    Optional<Order> getOrderById(long id);
 
+    Optional<Order> getLastOrder();
 }

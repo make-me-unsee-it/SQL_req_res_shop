@@ -9,7 +9,7 @@ public interface GoodDAO {
 
     Optional<Good> getByTitle(String title);
 
-    Optional<Good> getId(long id);
+    Optional<Good> getById(long id);
 
     List<Good> getAll();
 

@@ -7,19 +7,18 @@ public class Good {
     private Long id;
     private String title;
     private BigDecimal price;
-    private String country;
 
-    public Good(Long id, String title, BigDecimal price, String country) {
+
+    public Good(Long id, String title, BigDecimal price) {
         this.id = id;
         this.title = title;
         this.price = price;
-        this.country = country;
+
     }
 
-    public Good(String title, BigDecimal price, String country) {
+    public Good(String title, BigDecimal price) {
         this.title = title;
         this.price = price;
-        this.country = country;
     }
 
     public Long getId() {
@@ -46,25 +45,17 @@ public class Good {
         this.price = price;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Good)) return false;
         Good good = (Good) o;
-        return id.equals(good.id) && title.equals(good.title) && price.equals(good.price) && country.equals(good.country);
+        return Objects.equals(id, good.id) && Objects.equals(title, good.title) && Objects.equals(price, good.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, price, country);
+        return Objects.hash(id, title, price);
     }
 
     @Override
@@ -73,7 +64,6 @@ public class Good {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", price=" + price +
-                ", country='" + country + '\'' +
                 '}';
     }
 }

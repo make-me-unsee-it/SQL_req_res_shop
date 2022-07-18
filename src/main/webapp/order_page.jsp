@@ -24,15 +24,10 @@ background: gray;
             <label>
             <select name="select" size="1">
                 <c:forEach var="item" items="${goods}">
-                    <option>
-                        <c:out value ="${item.getTitle()}"/>
-                        <c:out value ="${item.getPrice()}"/>$
-                        <c:set target="thisId" value ="${item.getId()}"/>
-                    </option>
+                    <option value="${item.getId()}"> ${item.getTitle()} ${item.getPrice()}$</option>
                 </c:forEach>
-                <%-- <input type="hidden" name="currentId" value="${item.getId()}"/> --%>
-                <input type="submit" value="Add item">
             </select>
+             <input type="submit" value="Add item">
             </label>
         </p>
     </form>

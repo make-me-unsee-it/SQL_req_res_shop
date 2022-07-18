@@ -18,11 +18,11 @@
   </servlet-mapping>
 
   <filter>
-    <filter-name>UserPassFilter</filter-name>
-    <filter-class>com.step.hryshkin.filters.UserPassFilter</filter-class>
+    <filter-name>ShopFilter</filter-name>
+    <filter-class>com.step.hryshkin.filters.ShopFilter</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>UserPassFilter</filter-name>
+    <filter-name>ShopFilter</filter-name>
     <url-pattern>/order_page.jsp</url-pattern>
   </filter-mapping>
 

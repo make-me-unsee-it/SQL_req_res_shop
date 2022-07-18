@@ -36,3 +36,10 @@ create table orders
     userId      int,
     totalPrice  DOUBLE
 );
+
+create table ordergoods
+(
+    id          int AUTO_INCREMENT,
+    orderId     int,
+    goodId      int
+);

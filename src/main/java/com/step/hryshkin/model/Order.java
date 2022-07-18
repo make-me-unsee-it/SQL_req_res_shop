@@ -14,6 +14,12 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public Order(Long userId, BigDecimal totalPrice) {
+        this.userId = userId;
+        this.totalPrice = totalPrice;
+    }
+
+
     public Long getId() {
         return id;
     }

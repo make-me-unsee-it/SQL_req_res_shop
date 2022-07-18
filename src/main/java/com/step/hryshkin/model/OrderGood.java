@@ -7,8 +7,7 @@ public class OrderGood {
     private Long orderId;
     private Long goodId;
 
-    public OrderGood(Long id, Long orderId, Long goodId) {
-        this.id = id;
+    public OrderGood(Long orderId, Long goodId) {
         this.orderId = orderId;
         this.goodId = goodId;
     }

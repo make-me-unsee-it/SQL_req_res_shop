@@ -30,8 +30,7 @@ public class GoodDAOImpl implements GoodDAO {
                 while (rs.next()) {
                     good = Optional.of(new Good(rs.getLong("ID"),
                             rs.getNString("TITLE"),
-                            rs.getBigDecimal("PRICE"),
-                            rs.getNString("COUNTRY")));
+                            rs.getBigDecimal("PRICE")));
                 }
             }
         } catch (SQLException throwable) {
@@ -42,7 +41,7 @@ public class GoodDAOImpl implements GoodDAO {
     }
 
     @Override
-    public Optional<Good> getId(long id) {
+    public Optional<Good> getById(long id) {
         Optional<Good> good = Optional.empty();
         try (Connection connection = Connector.createConnection()) {
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM GOODS WHERE ID =" + id)) {
@@ -50,8 +49,7 @@ public class GoodDAOImpl implements GoodDAO {
                 while (rs.next()) {
                     good = Optional.of(new Good(rs.getLong("ID"),
                             rs.getNString("TITLE"),
-                            rs.getBigDecimal("PRICE"),
-                            rs.getNString("COUNTRY")));
+                            rs.getBigDecimal("PRICE")));
                 }
             }
         } catch (SQLException throwable) {
@@ -70,8 +68,7 @@ public class GoodDAOImpl implements GoodDAO {
                 while (rs.next()) {
                     good = new Good(rs.getLong("ID"),
                             rs.getNString("TITLE"),
-                            rs.getBigDecimal("PRICE"),
-                            rs.getNString("COUNTRY"));
+                            rs.getBigDecimal("PRICE"));
                     goodList.add(good);
                 }
             }
