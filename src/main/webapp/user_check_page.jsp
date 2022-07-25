@@ -18,7 +18,7 @@ background: gray;
 
 <body>
     <h3 align="center">Добро пожаловать в онлайн-магазин!</h3>
-<form action="/order_page.jsp" method="get">
+<form action="/order_page.jsp" method="post">
 
 <p align="center">
 <label for="username">введите имя пользователя: <input type="text" id="username" required name="username"></label>
