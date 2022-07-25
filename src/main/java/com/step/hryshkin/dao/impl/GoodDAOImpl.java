@@ -3,12 +3,15 @@ package com.step.hryshkin.dao.impl;
 import com.step.hryshkin.config.Connector;
 import com.step.hryshkin.config.ContextInitializer;
 import com.step.hryshkin.dao.GoodDAO;
+import com.step.hryshkin.dao.UserDAO;
 import com.step.hryshkin.model.Good;
 
 
+import com.step.hryshkin.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +22,7 @@ import java.util.Optional;
 
 public class GoodDAOImpl implements GoodDAO {
     private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
-
+    private final UserDAO userDAO = new UserDAOImpl();
 
     @Override
     public Optional<Good> getByTitle(String title) {
@@ -76,5 +79,53 @@ public class GoodDAOImpl implements GoodDAO {
             LOGGER.error("SQLException in method getAll" + throwable);
         }
         return goodList;
+    }
+
+    @Override
+    public List<String> getGoodBasketByUserName(String userName) {
+        Optional<User> newUser = userDAO.getUserByName(userName);
+        List<String> goodsInBasket = new ArrayList<>();
+        if (newUser.isPresent()) {
+            String userNameId = String.valueOf(newUser.get().getId());
+            try (Connection connection = Connector.createConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT g.title, o.totalPrice FROM orders AS o " +
+                        "JOIN orderGoods AS b ON o.id = b.orderId " +
+                        "JOIN goods AS g ON b.goodId = g.id " +
+                        "WHERE o.userId = '" + userNameId + "';")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        goodsInBasket.add(rs.getNString("TITLE") + " " + rs.getBigDecimal("TOTALPRICE") + "$");
+                    }
+                }
+            } catch (SQLException throwable) {
+                LOGGER.error("SQLException at GoodDAOImpl at getGoodBasketByUserName" + throwable);
+            }
+        }
+        return goodsInBasket;
+    }
+
+    @Override
+    public BigDecimal getTotalPriceByUserName(String userName) {
+        Optional<User> newUser = userDAO.getUserByName(userName);
+        BigDecimal totalPrice = new BigDecimal("0");
+        if (newUser.isPresent()) {
+            String userNameId = String.valueOf(newUser.get().getId());
+            try (Connection connection = Connector.createConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT SUM (totalPrice) AS RESULT FROM orders " +
+                        "WHERE USERID = '" + userNameId + "';")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        String result = rs.getNString("RESULT");
+                        if (result == null) {
+                            result = "0";
+                        }
+                        totalPrice = new BigDecimal(result);
+                    }
+                }
+            } catch (SQLException throwable) {
+                LOGGER.error("SQLException at GoodDAOImpl at getTotalPriceByUserName" + throwable);
+            }
+        }
+        return totalPrice;
     }
 }

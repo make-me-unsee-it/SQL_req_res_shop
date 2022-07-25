@@ -1,6 +1,5 @@
 package com.step.hryshkin.model;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class User {
