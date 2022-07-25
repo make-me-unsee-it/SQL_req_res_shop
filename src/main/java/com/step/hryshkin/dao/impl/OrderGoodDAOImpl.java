@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 
-
 public class OrderGoodDAOImpl implements OrderGoodDAO {
 
     private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
@@ -23,12 +22,12 @@ public class OrderGoodDAOImpl implements OrderGoodDAO {
         try (Connection connection = Connector.createConnection()) {
             try (PreparedStatement statement = connection
                     .prepareStatement("INSERT INTO ORDERGOODS (ORDERID, GOODID) values (?,?)")) {
-                statement.setString(1, orderGood.getOrderId().toString());
-                statement.setString(2, orderGood.getGoodId().toString());
+                statement.setLong(1, orderGood.getOrderId());
+                statement.setLong(2, orderGood.getGoodId());
                 statement.executeUpdate();
             }
-        } catch (SQLException exception) {
-            LOGGER.error("SQLException at OrderGoodDAOImpl at CreateNewOrderGood" + exception);
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at OrderGoodDAOImpl at CreateNewOrderGood" + throwable);
         }
     }
 

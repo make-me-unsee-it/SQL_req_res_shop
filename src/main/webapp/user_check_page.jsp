@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,10 +9,7 @@
 body {
 background: gray;
 }
-
 </style>
-
-
 </head>
 
 <body>
@@ -24,10 +20,8 @@ background: gray;
 <label for="username">введите имя пользователя: <input type="text" id="username" required name="username"></label>
 </p>
 
-<p align="center">
-<label>введите Ваш пароль: <input type="text" name="password"></label>
-</p>
-            <p align="center"><input type="checkbox" name="check" > я согласен с условиями пользовательского соглашения</p>
+<p align="center"><label>введите Ваш пароль: <input type="text" name="password"></label></p>
+<p align="center"><input type="checkbox" name="check" > я согласен с условиями пользовательского соглашения</p>
 <p align="center"><input type="submit" value="перейти в магазин"></p>
 
 </form>

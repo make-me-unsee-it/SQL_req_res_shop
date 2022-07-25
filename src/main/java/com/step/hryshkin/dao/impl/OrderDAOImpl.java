@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import com.step.hryshkin.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +23,12 @@ public class OrderDAOImpl implements OrderDAO {
         try (Connection connection = Connector.createConnection()) {
             try (PreparedStatement statement = connection
                     .prepareStatement("INSERT INTO ORDERS (USERID, TOTALPRICE) values (?,?)")) {
-                statement.setString(1, order.getUserId().toString());
+                statement.setLong(1, order.getUserId());
                 statement.setString(2, order.getTotalPrice().toString());
                 statement.executeUpdate();
             }
-        } catch (SQLException exception) {
-            LOGGER.error("SQLException at OrderDAOImpl at CreateNewOrder" + exception);
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at OrderDAOImpl at CreateNewOrder" + throwable);
         }
     }
 
@@ -51,8 +50,8 @@ public class OrderDAOImpl implements OrderDAO {
                             rs.getBigDecimal("TOTALPRICE")));
                 }
             }
-        } catch (SQLException exception) {
-            LOGGER.error("SQLException at OrderDAOImpl at getLastOrder()");
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at OrderDAOImpl at getLastOrder()" + throwable);
         }
         return order;
     }

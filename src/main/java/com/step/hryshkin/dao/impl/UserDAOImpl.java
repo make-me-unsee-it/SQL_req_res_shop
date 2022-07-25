@@ -26,8 +26,8 @@ public class UserDAOImpl implements UserDAO {
                 statement.setString(2, user.getPassword());
                 statement.executeUpdate();
             }
-        } catch (SQLException exception) {
-            LOGGER.error("SQLException at UserDAOImpl at CreateNewUser" + exception);
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at UserDAOImpl at CreateNewUser" + throwable);
         }
     }
 
@@ -44,8 +44,8 @@ public class UserDAOImpl implements UserDAO {
                             rs.getString("PASSWORD")));
                 }
             }
-        } catch (SQLException exception) {
-            LOGGER.error("SQLException at UserDAOImpl at getUserByName(String username)");
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at UserDAOImpl at getUserByName(String username)" + throwable);
         }
         return result;
     }

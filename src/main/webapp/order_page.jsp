@@ -4,22 +4,18 @@
 <%@ page import="com.step.hryshkin.utils.UtilsForOnlineShop"%>
 <%@ page import="com.step.hryshkin.service.impl.GoodServiceImpl"%>
 
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>СОЗДАНО В УЧЕБНЫХ ЦЕЛЯХ</title>
-
 <style type="text/css">
 body {
 background: gray;
 }
 </style>
-
 </head>
 
 <body>
-
 <h3 align="center">Здравствуйте, <%= ((User) request.getSession().getAttribute("user")).getLogin() %>!</h3>
 
 <form action="/order_page.jsp" method="post">
@@ -42,14 +38,9 @@ background: gray;
                 <li>${item}</li>
             </c:forEach>
          </ol>
-    <h4>Сумма: <%= new GoodServiceImpl().printTotalPriceForCurrentUser(((User) request.getSession().getAttribute("user")).getLogin()) %> </h4>
 </div>
     <form action="/basket_page.jsp" method="post">
         <p align="center"><input type="submit" value="заказать"></p>
     </form>
-    <form action="/user_check_page.jsp" method="post">
-        <p align="center"><input type="submit" value="вернуться на главную"></p>
-    </form>
-
 </body>
 </html>
