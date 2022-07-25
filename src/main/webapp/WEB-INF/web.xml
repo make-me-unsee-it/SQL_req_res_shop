@@ -35,6 +35,5 @@
     <location>/404.jsp</location>
   </error-page>
 
-
   <display-name>Archetype Created Web Application</display-name>
 </web-app>

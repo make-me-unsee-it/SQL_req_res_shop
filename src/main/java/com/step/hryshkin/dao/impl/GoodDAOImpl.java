@@ -5,8 +5,6 @@ import com.step.hryshkin.config.ContextInitializer;
 import com.step.hryshkin.dao.GoodDAO;
 import com.step.hryshkin.dao.UserDAO;
 import com.step.hryshkin.model.Good;
-
-
 import com.step.hryshkin.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

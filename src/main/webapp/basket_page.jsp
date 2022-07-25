@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ page import="com.step.hryshkin.model.User"%>
 <%@ page import="com.step.hryshkin.utils.UtilsForOnlineShop"%>
+<%@ page import="com.step.hryshkin.service.impl.GoodServiceImpl"%>
 
 <html lang="en">
 <head>
@@ -27,7 +28,7 @@ background: gray;
                 <li>${item}</li>
             </c:forEach>
          </ol>
-    <h4>Сумма: <%= UtilsForOnlineShop.printTotalPriceForCurrentUser(((User) request.getSession().getAttribute("user")).getLogin()) %> </h4>
+    <h4>Сумма: <%= new GoodServiceImpl().printTotalPriceForCurrentUser(((User) request.getSession().getAttribute("user")).getLogin()) %> </h4>
 </div>
     <form action="/user_check_page.jsp" method="post">
         <p align="center"><input type="submit" value="вернуться на главную"></p>

@@ -32,8 +32,4 @@ public class UtilsForOnlineShop {
     public static List<String> printGoodsForCurrentUser(String name) {
         return goodDAO.getGoodBasketByUserName(name);
     }
-
-    public static String printTotalPriceForCurrentUser(String name) {
-        return goodDAO.getTotalPriceByUserName(name).toString();
-    }
 }

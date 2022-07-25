@@ -51,13 +51,12 @@
       <version>${jsp-api_version}</version>
       <scope>provided</scope>
     </dependency>
-    <!--
+    <!-- works without jstl too -->
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
       <version>${jstl_version}</version>
     </dependency>
-    -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
