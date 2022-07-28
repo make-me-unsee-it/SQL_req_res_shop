@@ -1,7 +1,6 @@
 package com.step.hryshkin.dao.impl;
 
 import com.step.hryshkin.config.Connector;
-import com.step.hryshkin.config.ContextInitializer;
 import com.step.hryshkin.dao.GoodDAO;
 import com.step.hryshkin.dao.UserDAO;
 import com.step.hryshkin.model.Good;
