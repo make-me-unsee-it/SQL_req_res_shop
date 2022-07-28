@@ -12,6 +12,8 @@ public interface GoodDAO {
 
     List<String> getGoodBasketByUserName(String userName);
 
+    List<String> getGoodListByOrderId(long id);
+
     BigDecimal getTotalPriceByUserName(String userName);
 
     Optional<Good> getById(long id);

@@ -5,6 +5,7 @@ import com.step.hryshkin.config.ContextInitializer;
 import com.step.hryshkin.dao.OrderDAO;
 import com.step.hryshkin.model.Order;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +25,7 @@ public class OrderDAOImpl implements OrderDAO {
             try (PreparedStatement statement = connection
                     .prepareStatement("INSERT INTO ORDERS (USERID, TOTALPRICE) values (?,?)")) {
                 statement.setLong(1, order.getUserId());
-                statement.setString(2, order.getTotalPrice().toString());
+                statement.setBigDecimal(2, order.getTotalPrice());
                 statement.executeUpdate();
             }
         } catch (SQLException throwable) {
@@ -55,4 +56,40 @@ public class OrderDAOImpl implements OrderDAO {
         }
         return order;
     }
+
+    @Override
+    public void updateOrder(Order order) {
+        try (Connection connection = Connector.createConnection()) {
+            try (PreparedStatement statement = connection
+                    .prepareStatement("UPDATE orders SET totalPrice = ? WHERE id = ?;")) {
+                statement.setBigDecimal(1, order.getTotalPrice());
+                statement.setLong(2, order.getId());
+                statement.executeUpdate();
+            }
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at OrderDAOImpl at CreateNewOrder" + throwable);
+        }
+    }
+
+    @Override
+    public BigDecimal getTotalPriceByOrderId(long id) {
+        BigDecimal totalPrice = new BigDecimal("0");
+        try (Connection connection = Connector.createConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT totalPrice AS RESULT FROM orders " +
+                    "WHERE id = '" + id + "';")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String result = rs.getNString("RESULT");
+                    if (result == null) {
+                        result = "0";
+                    }
+                    totalPrice = new BigDecimal(result);
+                }
+            }
+        } catch (SQLException throwable) {
+            LOGGER.error("SQLException at OrderDAOImpl at getTotalPriceByOrderId " + throwable);
+        }
+        return totalPrice;
+    }
+
 }

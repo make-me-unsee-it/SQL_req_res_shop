@@ -103,6 +103,24 @@ public class GoodDAOImpl implements GoodDAO {
     }
 
     @Override
+    public List<String> getGoodListByOrderId(long id) {
+        List<String> goodsInBasket = new ArrayList<>();
+            try (Connection connection = Connector.createConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT g.title, g.price FROM goods AS g " +
+                        "JOIN orderGoods AS b ON g.id = b.goodId " +
+                        "WHERE b.orderId = '" + id + "';")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        goodsInBasket.add(rs.getNString("TITLE") + " " + rs.getBigDecimal("PRICE") + "$");
+                    }
+                }
+            } catch (SQLException throwable) {
+                LOGGER.error("SQLException at GoodDAOImpl at getGoodBasketByUserName" + throwable);
+            }
+        return goodsInBasket;
+    }
+
+    @Override
     public BigDecimal getTotalPriceByUserName(String userName) {
         Optional<User> newUser = userDAO.getUserByName(userName);
         BigDecimal totalPrice = new BigDecimal("0");

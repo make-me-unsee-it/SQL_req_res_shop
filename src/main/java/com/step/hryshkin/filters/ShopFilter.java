@@ -27,8 +27,8 @@ public class ShopFilter implements Filter {
     private final UserDAO userDAO = new UserDAOImpl();
     private final GoodDAO goodDAO = new GoodDAOImpl();
     private final OrderDAO orderDAO = new OrderDAOImpl();
-    private final OrderGoodDAO orderGoodDAO = new OrderGoodDAOImpl();
 
+    private final OrderGoodDAO orderGoodDAO = new OrderGoodDAOImpl();
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
@@ -68,18 +68,32 @@ public class ShopFilter implements Filter {
 
     private void checkForNewOrder(HttpServletRequest request) {
         if (request.getParameter("select") != null) {
-            long currentOrderId = Long.parseLong(request.getParameter("select"));
-            User currentUser = (User) request.getSession().getAttribute("user");
-            Optional<Good> currentGood = goodDAO.getById(currentOrderId);
+            Long userId = ((User) request.getSession().getAttribute("user")).getId();
+            long goodId = Long.parseLong(request.getParameter("select"));
+            Optional<Good> currentGood = goodDAO.getById(goodId);
             if (currentGood.isPresent()) {
-                BigDecimal currentGoodPrice = currentGood.get().getPrice();
-                Order order = new Order(currentUser.getId(), currentGoodPrice);
-                orderDAO.createNewOrder(order);
-                long currentGoodId = currentGood.get().getId();
-                Optional<Order> lastOrder = orderDAO.getLastOrder();
-                if (lastOrder.isPresent()) {
-                    OrderGood orderGood = new OrderGood(lastOrder.get().getId(), currentGoodId);
+                if (request.getSession().getAttribute("order") != null) {
+                    long currentOrderId = ((Order) request.getSession().getAttribute("order")).getId();
+                    BigDecimal currentOrderTotalPrice =
+                            ((Order) request.getSession().getAttribute("order")).getTotalPrice();
+                    currentOrderTotalPrice = currentOrderTotalPrice.add(currentGood.get().getPrice());
+                    Order order = new Order(currentOrderId, userId, currentOrderTotalPrice);
+                    orderDAO.updateOrder(order);
+                    UtilsForOnlineShop.setOrder(request, order);
+                    OrderGood orderGood = new OrderGood(currentOrderId, goodId);
                     orderGoodDAO.createNewOrderGoodDAO(orderGood);
+                }
+
+                if (request.getSession().getAttribute("order") == null) {
+                    Order order = new Order(userId, currentGood.get().getPrice());
+                    orderDAO.createNewOrder(order);
+                    Optional<Order> newestOrder = orderDAO.getLastOrder();
+                    if (newestOrder.isPresent()) {
+                        UtilsForOnlineShop.setOrder(request, newestOrder.get());
+                        long orderId = newestOrder.get().getId();
+                        OrderGood orderGood = new OrderGood(orderId, goodId);
+                        orderGoodDAO.createNewOrderGoodDAO(orderGood);
+                    }
                 }
             }
         }
@@ -94,10 +108,10 @@ public class ShopFilter implements Filter {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(path);
                 try {
                     requestDispatcher.forward(request, servletResponse);
-                } catch (ServletException e) {
-                    LOGGER.error("ServletException in checkFlag");
-                } catch (IOException e) {
-                    LOGGER.error("IOException in checkFlag");
+                } catch (ServletException exception) {
+                    LOGGER.error("ServletException in checkFlag " + exception);
+                } catch (IOException exception) {
+                    LOGGER.error("IOException in checkFlag " + exception);
                 }
             }
         }

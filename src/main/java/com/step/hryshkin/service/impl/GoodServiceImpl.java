@@ -11,4 +11,5 @@ public class GoodServiceImpl implements GoodService {
     public String printTotalPriceForCurrentUser(String name) {
         return goodDAO.getTotalPriceByUserName(name).toString();
     }
+
 }

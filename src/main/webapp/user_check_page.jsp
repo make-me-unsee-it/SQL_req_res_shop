@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page import="com.step.hryshkin.utils.UtilsForOnlineShop"%>
 
 <html lang="en">
 <head>
@@ -11,6 +12,8 @@ background: gray;
 }
 </style>
 </head>
+
+<% UtilsForOnlineShop.stopShopping(request); %>
 
 <body>
     <h3 align="center">Добро пожаловать в онлайн-магазин!</h3>

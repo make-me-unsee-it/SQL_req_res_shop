@@ -26,6 +26,15 @@
     <url-pattern>/order_page.jsp</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>BasketNullFilter</filter-name>
+    <filter-class>com.step.hryshkin.filters.BasketNullFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>BasketNullFilter</filter-name>
+    <url-pattern>/basket_page.jsp</url-pattern>
+  </filter-mapping>
+
   <welcome-file-list>
     <welcome-file>user_check_page.jsp</welcome-file>
   </welcome-file-list>
