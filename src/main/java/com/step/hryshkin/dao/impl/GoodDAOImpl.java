@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class GoodDAOImpl implements GoodDAO {
-    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(GoodDAOImpl.class);
     private final UserDAO userDAO = new UserDAOImpl();
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class OrderGoodDAOImpl implements OrderGoodDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(OrderGoodDAOImpl.class);
 
 
     @Override

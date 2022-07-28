@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class BasketNullFilter implements Filter {
 
-    private static final Logger LOGGER = LogManager.getLogger(ShopFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger(BasketNullFilter.class);
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {

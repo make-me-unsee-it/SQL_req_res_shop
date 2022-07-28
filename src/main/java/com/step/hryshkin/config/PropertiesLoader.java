@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
-    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(PropertiesLoader.class);
     private static final String DB_PROPS_PATH = "/dataBase.properties";
     private static final Properties PROPERTIES = getProperties();
 

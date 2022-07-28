@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class OrderDAOImpl implements OrderDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(OrderDAOImpl.class);
 
     @Override
     public void createNewOrder(Order order) {

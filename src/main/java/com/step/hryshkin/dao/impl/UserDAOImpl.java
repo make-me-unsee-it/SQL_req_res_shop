@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserDAOImpl.class);
 
     @Override
     public void createNewUser(User user) {
