@@ -1,15 +1,30 @@
 package com.step.hryshkin.model;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class OrderGood {
+@Entity
+@Table(name = "ORDER_GOODS")
+public class OrderGood implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, updatable = false)
     private Long id;
+
+    @Column(name = "ORDER_ID", nullable = false)
     private Long orderId;
+
+    @Column(name = "GOOD_ID", nullable = false)
     private Long goodId;
 
     public OrderGood(Long orderId, Long goodId) {
         this.orderId = orderId;
         this.goodId = goodId;
+    }
+
+    public OrderGood() {
     }
 
     public Long getId() {

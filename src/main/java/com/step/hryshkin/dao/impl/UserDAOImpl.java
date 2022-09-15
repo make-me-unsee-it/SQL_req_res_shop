@@ -1,51 +1,60 @@
 package com.step.hryshkin.dao.impl;
 
-import com.step.hryshkin.config.Connector;
 import com.step.hryshkin.dao.UserDAO;
 import com.step.hryshkin.model.User;
+import com.step.hryshkin.utils.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
-
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private static final Logger LOGGER = LogManager.getLogger(UserDAOImpl.class);
 
     @Override
-    public void createNewUser(User user) {
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO USERS (username, password) values (?,?)")) {
-                statement.setString(1, user.getLogin());
-                statement.setString(2, user.getPassword());
-                statement.executeUpdate();
+    public Optional<User> getUserByName(String name) {
+                System.out.println("ПРИШЛИ ПРОВЕРЯТЬ getUserByName() с именем " + name);
+        Optional<User> user = Optional.empty();
+        //User user = null;
+        try (Session session = sessionFactory.openSession()) {
+                    System.out.println("внутри блока try");
+            user = Optional.ofNullable(session.createQuery("FROM User WHERE userName =:userName", User.class)
+                    .setParameter("userName", name).uniqueResult());
+            System.out.println("ИДЕМ К САУТАМ");
+            if (user.isPresent()) {
+                System.out.println("ПОЛУЧЕН ЮЗЕР. Имя " + user.get().getUserName());
+                System.out.println("ПОЛУЧЕН ЮЗЕР. Пароль " + user.get().getPassword());
+                System.out.println("ПОЛУЧЕН ЮЗЕР. Айди " + user.get().getId());
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at UserDAOImpl at CreateNewUser" + throwable);
+            System.out.println("в конце блока try");
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at UserDAOImpl at getUserByName" + exception);
         }
+        //return Optional.empty();
+        System.out.println("возвращаем опшнл.юзер");
+        return user;
     }
 
+
+    //тут все правильно!
     @Override
-    public Optional<User> getUserByName(String userName) {
-        Optional<User> result = Optional.empty();
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement statement = connection
-                    .prepareStatement("SELECT * FROM USERS WHERE USERNAME = '" + userName + "'")) {
-                ResultSet rs = statement.executeQuery();
-                while (rs.next()) {
-                    result = Optional.of(new User(rs.getLong("ID"),
-                            rs.getString("USERNAME"),
-                            rs.getString("PASSWORD")));
-                }
+    public void createNewUser(User user) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(user);
+            transaction.commit();
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at UserDAOImpl at createNewUser" + exception);
+            if (transaction != null) {
+                transaction.rollback();
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at UserDAOImpl at getUserByName(String username)" + throwable);
         }
-        return result;
     }
 }

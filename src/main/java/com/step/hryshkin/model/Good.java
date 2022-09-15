@@ -1,24 +1,37 @@
 package com.step.hryshkin.model;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Good {
-    private Long id;
-    private String title;
-    private BigDecimal price;
+@Entity
+@Table(name = "GOODS")
+public class Good implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, updatable = false)
+    private Long id;
+
+    @Column(name = "TITLE", nullable = false)
+    private String title;
+
+    @Column(name = "PRICE", nullable = false)
+    private BigDecimal price;
 
     public Good(Long id, String title, BigDecimal price) {
         this.id = id;
         this.title = title;
         this.price = price;
-
     }
 
     public Good(String title, BigDecimal price) {
         this.title = title;
         this.price = price;
+    }
+
+    public Good() {
     }
 
     public Long getId() {

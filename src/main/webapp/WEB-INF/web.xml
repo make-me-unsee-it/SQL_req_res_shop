@@ -4,10 +4,6 @@
          xsi:schemaLocation=""
          version="4.0">
 
-  <listener>
-    <listener-class>com.step.hryshkin.config.ContextInitializer</listener-class>
-  </listener>
-
   <servlet>
     <servlet-name>h2-console</servlet-name>
     <servlet-class>org.h2.server.web.WebServlet</servlet-class>

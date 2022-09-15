@@ -1,37 +1,33 @@
 package com.step.hryshkin.dao.impl;
 
-import com.step.hryshkin.config.Connector;
 import com.step.hryshkin.dao.OrderGoodDAO;
 import com.step.hryshkin.model.OrderGood;
+import com.step.hryshkin.utils.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Optional;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class OrderGoodDAOImpl implements OrderGoodDAO {
-
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private static final Logger LOGGER = LogManager.getLogger(OrderGoodDAOImpl.class);
-
 
     @Override
     public void createNewOrderGoodDAO(OrderGood orderGood) {
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO ORDERGOODS (ORDERID, GOODID) values (?,?)")) {
-                statement.setLong(1, orderGood.getOrderId());
-                statement.setLong(2, orderGood.getGoodId());
-                statement.executeUpdate();
+        System.out.println("Запущен createNewOrderGoodDAO()");
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(orderGood);
+            transaction.commit();
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at OrderGoodDAOImpl at createNewOrderGoodDAO" + exception);
+            if (transaction != null) {
+                transaction.rollback();
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at OrderGoodDAOImpl at CreateNewOrderGood" + throwable);
         }
-    }
-
-    @Override
-    public Optional<OrderGood> getOrderGoodById(long id) {
-        return Optional.empty();
+        System.out.println("createNewOrderGoodDAO() выполнен. Проверить в h2");
     }
 }

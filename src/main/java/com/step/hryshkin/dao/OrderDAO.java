@@ -13,7 +13,5 @@ public interface OrderDAO {
 
     BigDecimal getTotalPriceByOrderId(long id);
 
-    Optional<Order> getOrderById(long id);
-
     Optional<Order> getLastOrder();
 }

@@ -16,7 +16,7 @@ background: gray;
 </head>
 
 <body>
-<h3 align="center">Здравствуйте, <%= ((User) request.getSession().getAttribute("user")).getLogin() %>!</h3>
+<h3 align="center">Здравствуйте, <%= ((User) request.getSession().getAttribute("user")).getUserName() %>!</h3>
 
 <form action="/order_page.jsp" method="post">
         <p align="center">

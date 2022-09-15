@@ -1,11 +1,23 @@
 package com.step.hryshkin.model;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Order {
+@Entity
+@Table(name = "ORDERS")
+public class Order implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, updatable = false)
     private Long id;
+
+    @Column(name = "USER_ID", nullable = false)
     private Long userId;
+
+    @Column(name = "TOTAL_PRICE", nullable = false)
     private BigDecimal totalPrice;
 
     public Order(Long id, Long userId, BigDecimal totalPrice) {
@@ -17,6 +29,9 @@ public class Order {
     public Order(Long userId, BigDecimal totalPrice) {
         this.userId = userId;
         this.totalPrice = totalPrice;
+    }
+
+    public Order() {
     }
 
     public Long getId() {

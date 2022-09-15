@@ -1,94 +1,86 @@
 package com.step.hryshkin.dao.impl;
 
-import com.step.hryshkin.config.Connector;
 import com.step.hryshkin.dao.OrderDAO;
 import com.step.hryshkin.model.Order;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
+import com.step.hryshkin.utils.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class OrderDAOImpl implements OrderDAO {
-
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private static final Logger LOGGER = LogManager.getLogger(OrderDAOImpl.class);
 
+
+    //TODO каменты. Вроде бы работает
     @Override
     public void createNewOrder(Order order) {
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO ORDERS (USERID, TOTALPRICE) values (?,?)")) {
-                statement.setLong(1, order.getUserId());
-                statement.setBigDecimal(2, order.getTotalPrice());
-                statement.executeUpdate();
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(order);
+            transaction.commit();
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at OrderDAOImpl at createNewOrder" + exception);
+            if (transaction != null) {
+                transaction.rollback();
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at OrderDAOImpl at CreateNewOrder" + throwable);
         }
     }
 
-    @Override
-    public Optional<Order> getOrderById(long id) {
-        return Optional.empty();
-    }
-
+    //TODO каменты. Кажется заработал. Но стоит понаблюдать
     @Override
     public Optional<Order> getLastOrder() {
+        System.out.println("Чиним неисправный getLastOrder()");
         Optional<Order> order = Optional.empty();
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement ps = connection
-                    .prepareStatement("SELECT * FROM ORDERS WHERE ID = (SELECT MAX(ID) FROM ORDERS)")) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    order = Optional.of(new Order(rs.getLong("ID"),
-                            rs.getLong("USERID"),
-                            rs.getBigDecimal("TOTALPRICE")));
-                }
-            }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at OrderDAOImpl at getLastOrder()" + throwable);
+        try (Session session = sessionFactory.openSession()) {
+            System.out.println("внутри трай");
+            order = Optional.of(session.createQuery("FROM Order WHERE id IN (SELECT MAX(id) FROM Order)", Order.class)
+                    .uniqueResult()); //TODO - наблюдать. Не факт, что сработает как надо дальше
+            System.out.println("стоимость ордера = " + order.get().getTotalPrice());
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at OrderDAOImpl at getLastOrder" + exception);
         }
+        System.out.println("возвращаем последний ордер");
         return order;
     }
 
     @Override
     public void updateOrder(Order order) {
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement statement = connection
-                    .prepareStatement("UPDATE orders SET totalPrice = ? WHERE id = ?;")) {
-                statement.setBigDecimal(1, order.getTotalPrice());
-                statement.setLong(2, order.getId());
-                statement.executeUpdate();
+        System.out.println("выполняется updateOrder()");
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.update(order); //TODO не уверен, что это работает!
+            transaction.commit();
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at OrderDAOImpl at updateOrder" + exception);
+            if (transaction != null) {
+                transaction.rollback();
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at OrderDAOImpl at CreateNewOrder" + throwable);
         }
+        System.out.println("updateOrder() выполнился. Проверить вручную в h2");
     }
 
     @Override
     public BigDecimal getTotalPriceByOrderId(long id) {
         BigDecimal totalPrice = new BigDecimal("0");
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT totalPrice AS RESULT FROM orders " +
-                    "WHERE id = '" + id + "';")) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    String result = rs.getNString("RESULT");
-                    if (result == null) {
-                        result = "0";
-                    }
-                    totalPrice = new BigDecimal(result);
-                }
+        try (Session session = sessionFactory.openSession()) {
+            String sum = Optional.of(session.createQuery("FROM Orders WHERE Id = '" + id + "';")
+                    .uniqueResult()).toString(); //TODO не уверен, что это работает!
+            if (sum != null) {
+                totalPrice = new BigDecimal(sum);
             }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at OrderDAOImpl at getTotalPriceByOrderId " + throwable);
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at OrderDAOImpl at getTotalPriceByOrderId" + exception);
         }
         return totalPrice;
     }
-
 }
