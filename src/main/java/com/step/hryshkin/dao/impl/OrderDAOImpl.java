@@ -1,6 +1,7 @@
 package com.step.hryshkin.dao.impl;
 
 import com.step.hryshkin.dao.OrderDAO;
+import com.step.hryshkin.model.Good;
 import com.step.hryshkin.model.Order;
 
 import java.math.BigDecimal;
@@ -70,14 +71,17 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public BigDecimal getTotalPriceByOrderId(long id) {
+    public BigDecimal getTotalPriceByOrderId(long userId) {
+        System.out.println("ПОСЛЕДНЯЯ ПРОВЕРКА!");
         BigDecimal totalPrice = new BigDecimal("0");
+        Optional<Order> order = Optional.empty();
         try (Session session = sessionFactory.openSession()) {
-            String sum = Optional.of(session.createQuery("FROM Orders WHERE Id = '" + id + "';")
-                    .uniqueResult()).toString(); //TODO не уверен, что это работает!
-            if (sum != null) {
-                totalPrice = new BigDecimal(sum);
-            }
+            System.out.println("внутри. Ордер айди = " + userId);
+            order = Optional.of(session.createQuery("FROM Order WHERE id IN (SELECT MAX(id) FROM Order)", Order.class)
+                    .uniqueResult()); //TODO - наблюдать. Не факт, что сработает как надо дальше
+            System.out.println("стоимость ордера = " + order.get().getTotalPrice());
+            totalPrice = order.get().getTotalPrice();
+
         } catch (HibernateException exception) {
             LOGGER.error("HibernateException at OrderDAOImpl at getTotalPriceByOrderId" + exception);
         }

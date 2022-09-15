@@ -7,6 +7,7 @@ import com.step.hryshkin.model.Order;
 import com.step.hryshkin.model.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UtilsForOnlineShop {
@@ -31,7 +32,7 @@ public class UtilsForOnlineShop {
         List<Good> goods = null;
         goods = (List<Good>) request.getSession().getAttribute("goods");
         System.out.println("Это метод getGoods в утилитах");
-        System.out.println(goods);
+    System.out.println(goods);
         return (List<Good>) request.getSession().getAttribute("goods");
     }
 
@@ -57,6 +58,7 @@ public class UtilsForOnlineShop {
         request.getSession().setAttribute("check", check);
     }
 
+    //TODO. Не помню чтобы где-то я это использовал! Найти и если что - выпилить!
     public static List<String> printGoodsForCurrentUser(String name) {
         return goodDAO.getGoodBasketByUserName(name);
     }
@@ -64,6 +66,14 @@ public class UtilsForOnlineShop {
     public static List<String> printGoodsForCurrentOrder(long id) {
         return goodDAO.getGoodListByOrderId(id);
     }
+
+    /*
+    public static List<String> printGoodsForCurrentOrder(List<String> numberList, HttpServletRequest request) {
+        List<String> printingGoods = new ArrayList<>();
+        request.getSession().getAttribute("goods")
+        return goodDAO.getGoodListByOrderId(id);
+    }
+     */
 
     public static void stopShopping(HttpServletRequest request) {
         request.getSession().invalidate();

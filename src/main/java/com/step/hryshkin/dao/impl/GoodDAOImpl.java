@@ -3,6 +3,7 @@ package com.step.hryshkin.dao.impl;
 import com.step.hryshkin.dao.GoodDAO;
 import com.step.hryshkin.dao.UserDAO;
 import com.step.hryshkin.model.Good;
+import com.step.hryshkin.model.OrderGood;
 import com.step.hryshkin.model.User;
 import com.step.hryshkin.utils.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -12,10 +13,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +22,7 @@ public class GoodDAOImpl implements GoodDAO {
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private final UserDAO userDAO = new UserDAOImpl();
 
+    //TODO вроде работает
     @Override
     public Optional<Good> getByTitle(String title) {
         Optional<Good> good = Optional.empty();
@@ -38,6 +36,7 @@ public class GoodDAOImpl implements GoodDAO {
         return good;
     }
 
+    //TODO вроде работает
     @Override
     public Optional<Good> getById(long id) {
         System.out.println("Проверяем getById()");
@@ -78,6 +77,50 @@ public class GoodDAOImpl implements GoodDAO {
         else return null;
     }
 
+    //TODO тут тоже не переделано. Начинаю чинить!
+    @Override
+    public List<String> getGoodListByOrderId(long id) {
+        System.out.println("проверка getGoodListByOrderId()");
+        Optional<List<OrderGood>> goodsInBasket = Optional.empty();
+        try (Session session = sessionFactory.openSession()) {
+            System.out.println("в сессии getGoodListByOrderId()");
+            goodsInBasket = Optional.of(session.createQuery("FROM OrderGood WHERE orderId =:orderId", OrderGood.class)
+                    .setParameter("orderId", id).getResultList());
+            System.out.println("сессия отработала");
+        } catch (HibernateException exception) {
+            LOGGER.error("HibernateException at GoodDAOImpl at getGoodListByOrderId" + exception);
+        }
+        List<String> result = new ArrayList<>();
+        System.out.println("ОДИН!!!");
+        if (goodsInBasket.isPresent()) {
+            System.out.println("ДВА!!!");
+            for (OrderGood orderGood: goodsInBasket.get()) {
+                System.out.println("ТРИ!!!");
+                Optional<Good> good = Optional.empty();
+                Long goodId = orderGood.getGoodId();
+                System.out.println("ЧЕТЫРЕ!!! " + goodId);
+                try (Session session = sessionFactory.openSession()) {
+                    System.out.println("ПЯТЬ!!!");
+                    good = Optional.of(session.createQuery("FROM Good WHERE id =:id", Good.class)
+                            .setParameter("id", goodId)
+                            .uniqueResult()); //TODO по идее это должно работать
+                    System.out.println("ШЕСТЬ!!!");
+                } catch (HibernateException exception) {
+                    LOGGER.error("HibernateException at GoodDAOImpl at getGoodListByOrderId (inner)" + exception);
+                }
+                System.out.println("СЕМЬ!!!");
+                if (good.isPresent()) {
+                    result.add(good.get().getTitle() + " " + good.get().getPrice());
+                    System.out.println("ВОСЕМЬ!!!");
+                }
+            }
+        }
+        System.out.println("ДЕВЯТЬ!!!");
+        return result;
+    }
+
+
+    //TODO НЕ СПЕШИТЬ ИСПРАВЛЯТЬ. ВОЗМОЖНО ОН НЕ ИСПОЛЬЗУЕТСЯ!
     @Override
     public List<String> getGoodBasketByUserName(String userName) {
         Optional<User> newUser = userDAO.getUserByName(userName);
@@ -104,27 +147,6 @@ public class GoodDAOImpl implements GoodDAO {
         return goodsInBasket;
     }
 
-    @Override
-    public List<String> getGoodListByOrderId(long id) {
-        List<String> goodsInBasket = new ArrayList<>();
-        //TODO тут тоже не переделано
-        /*
-        try (Connection connection = Connector.createConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT g.title, g.price FROM goods AS g " +
-                    "JOIN orderGoods AS b ON g.id = b.goodId " +
-                    "WHERE b.orderId = '" + id + "';")) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    goodsInBasket.add(rs.getNString("TITLE") + " " + rs.getBigDecimal("PRICE") + "$");
-                }
-            }
-        } catch (SQLException throwable) {
-            LOGGER.error("SQLException at GoodDAOImpl at getGoodBasketByUserName" + throwable);
-        }
-
-         */
-        return goodsInBasket;
-    }
 
     @Override
     public BigDecimal getTotalPriceByUserName(String userName) {

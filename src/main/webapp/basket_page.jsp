@@ -20,7 +20,7 @@ background: gray;
 
 <body>
 
-<h3 align="center">Здравствуйте, <%= ((User) request.getSession().getAttribute("user")).getLogin() %>!</h3>
+<h3 align="center">Здравствуйте, <%= ((User) request.getSession().getAttribute("user")).getUserName() %>!</h3>
 
 <div align="center">
     <h4>Ваш заказ:</h4>
