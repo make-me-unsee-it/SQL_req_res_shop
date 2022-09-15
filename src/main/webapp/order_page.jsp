@@ -2,7 +2,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ page import="com.step.hryshkin.model.User"%>
 <%@ page import="com.step.hryshkin.utils.UtilsForOnlineShop"%>
-<%@ page import="com.step.hryshkin.service.impl.GoodServiceImpl"%>
 
 <html lang="en">
 <head>

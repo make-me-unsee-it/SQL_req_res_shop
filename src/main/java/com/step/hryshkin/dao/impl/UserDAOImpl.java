@@ -19,30 +19,16 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Optional<User> getUserByName(String name) {
-                System.out.println("ПРИШЛИ ПРОВЕРЯТЬ getUserByName() с именем " + name);
         Optional<User> user = Optional.empty();
-        //User user = null;
         try (Session session = sessionFactory.openSession()) {
-                    System.out.println("внутри блока try");
             user = Optional.ofNullable(session.createQuery("FROM User WHERE userName =:userName", User.class)
                     .setParameter("userName", name).uniqueResult());
-            System.out.println("ИДЕМ К САУТАМ");
-            if (user.isPresent()) {
-                System.out.println("ПОЛУЧЕН ЮЗЕР. Имя " + user.get().getUserName());
-                System.out.println("ПОЛУЧЕН ЮЗЕР. Пароль " + user.get().getPassword());
-                System.out.println("ПОЛУЧЕН ЮЗЕР. Айди " + user.get().getId());
-            }
-            System.out.println("в конце блока try");
         } catch (HibernateException exception) {
             LOGGER.error("HibernateException at UserDAOImpl at getUserByName" + exception);
         }
-        //return Optional.empty();
-        System.out.println("возвращаем опшнл.юзер");
         return user;
     }
 
-
-    //тут все правильно!
     @Override
     public void createNewUser(User user) {
         Transaction transaction = null;

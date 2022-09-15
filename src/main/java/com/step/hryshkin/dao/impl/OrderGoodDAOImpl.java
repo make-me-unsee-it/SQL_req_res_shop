@@ -16,7 +16,6 @@ public class OrderGoodDAOImpl implements OrderGoodDAO {
 
     @Override
     public void createNewOrderGoodDAO(OrderGood orderGood) {
-        System.out.println("Запущен createNewOrderGoodDAO()");
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
@@ -28,6 +27,5 @@ public class OrderGoodDAOImpl implements OrderGoodDAO {
                 transaction.rollback();
             }
         }
-        System.out.println("createNewOrderGoodDAO() выполнен. Проверить в h2");
     }
 }
